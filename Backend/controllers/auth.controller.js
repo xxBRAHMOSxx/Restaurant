@@ -1,15 +1,8 @@
-import User from "../models/userModel.js";
+import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-export const getUsers = async (req,res) => {
-    try {
-        const users = await User.find();
-        res.json(users);
-    } catch (error) {
-        res.status(500).json({message: error.message})
-    }
-}
+
 
 export const register = async (req,res) => {
     try {
@@ -65,10 +58,19 @@ export const login = async (req,res) => {
         }
 
         //create token
-        const token = jwt.sign({id:user._id, usertype:user.usertype,username,email ,profilepicture:user.profilepicture}, process.env.JWT_SECRET, {expiresIn: "30d"});
+        const token = jwt.sign(
+            {id:user._id, usertype:user.usertype},
+             process.env.JWT_SECRET, 
+             {expiresIn: "7d"});
 
         user.password= undefined
-        return res.status(200).send({message: "Login successful", user, token});
+
+        
+        return res.status(200)
+        .cookie('userDetails', 
+            JSON.stringify({ username: user.username, email: user.email, profilepicture: user.profilepicture }), 
+            { httpOnly: true, secure: true, sameSite: 'Strict' })
+        .send({message: "Login successful", user,token});
         
     } catch (error) {
         console.log(error);
