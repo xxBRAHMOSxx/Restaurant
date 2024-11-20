@@ -4,8 +4,8 @@ import morgan from 'morgan';
 import dotenv from 'dotenv';
 
 import {connectDB} from './config/db.connect.js';
-import testRoute from './routes/testRoute.js';
-import authRoutes from './routes/authRoutes.js';
+import testRoute from './routes/test.routes.js';
+import authRoutes from './routes/auth.routes.js';
 
 const app = express();
 
