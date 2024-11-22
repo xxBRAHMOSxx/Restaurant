@@ -59,18 +59,19 @@ export const login = async (req,res) => {
 
         //create token
         const token = jwt.sign(
-            {id:user._id, usertype:user.usertype},
+            {id:user._id},
              process.env.JWT_SECRET, 
              {expiresIn: "7d"});
 
-        user.password= undefined
+        //set cookie
 
-        
-        return res.status(200)
-        .cookie('userDetails', 
-            JSON.stringify({ username: user.username, email: user.email, profilepicture: user.profilepicture }), 
-            { httpOnly: true, secure: true, sameSite: 'Strict' })
-        .send({message: "Login successful", user,token});
+        user.password= undefined   
+        return res
+        .cookie('token', 
+            token, 
+            { httpOnly: true, })
+            .status(200)
+        .send({message: "Login successful",user});
         
     } catch (error) {
         console.log(error);
